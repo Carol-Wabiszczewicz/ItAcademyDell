@@ -1,0 +1,125 @@
+﻿@model TransporteModel
+@{
+    TempData.Keep();
+}
+@if (TempData.Get<MovimentacaoProdutoPorCidade>("EntradaProdutos") != null)
+{
+    <fieldset class="border p-4" style="width:650px;margin-top: 50px; margin-left: 30px; float: left">
+    <legend class="text-wrap">Itens de Entrada</legend>
+    <br />
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">Origem</th>
+                <th colspan="@(TransporteData.ProdutosDisponiveis().Count)" align="center">Entrada de </th>
+            </tr>
+
+            <tr>
+                @foreach (var item in TransporteData.ProdutosDisponiveis())
+                {
+                    <th>@item.Nome</th>
+                }
+            </tr>
+        </thead>
+        <tr>
+            <td>
+                @(
+                    TempData.Get<MovimentacaoProdutoPorCidade>("EntradaProdutos").Cidade
+                    )
+            </td>
+            @foreach (var prod in TransporteData.ProdutosDisponiveis())
+            {
+                <td>
+                    @(
+                        TempData.Get<MovimentacaoProdutoPorCidade>("EntradaProdutos").Produtos.QuantidadePorId(prod.Id)
+                        )
+                </td>
+            }
+        </tr>
+        <tfoot>
+            <tr>
+                <td>Peso Por Prod.</td>
+                @foreach (var prod in TransporteData.ProdutosDisponiveis())
+                {
+                    <td>
+                        @(
+                            TempData.Get<MovimentacaoProdutoPorCidade>("EntradaProdutos").Produtos.PesoPorId(prod.Id)
+                            )
+                    </td>
+                }
+
+            </tr>
+        </tfoot>
+    </table>
+    </fieldset>
+}
+
+
+@if (TempData.Get<List<MovimentacaoProdutoPorCidade>>("SaidaProdutos") != null)
+{
+    <div style="clear:inherit"></div>
+     <fieldset class="border p-4" style="width:650px;margin-left: 910px; margin-top: 25px; ">
+    <legend class="text-wrap">Itens de Saída</legend>
+    <br />
+
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">Destino</th>
+                <th colspan="@(TransporteData.ProdutosDisponiveis().Count)" align="center">Saída de </th>
+            </tr>
+
+            <tr>
+                @foreach (var item in TransporteData.ProdutosDisponiveis())
+                {
+                    <th>@item.Nome</th>
+                }
+            </tr>
+            <tr>Ações</tr>
+        </thead>
+        @foreach (var item in TempData.Get<List<MovimentacaoProdutoPorCidade>>("SaidaProdutos"))
+        {
+            <tr>
+                <td>@item.Cidade </td>
+                @foreach (var prod in TransporteData.ProdutosDisponiveis())
+                {
+                    <td>@item.Produtos.QuantidadePorId(prod.Id)</td>
+                }
+                <td><button onclick="RemoverItem(@item.Id)"> - </button></td>
+            </tr>
+        }
+
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">Quantidade de paradas</th>
+                <th colspan="@(TransporteData.ProdutosDisponiveis().Count)" align="center">Total de itens</th>
+            </tr>
+
+            <tr>
+                @foreach (var item in TransporteData.ProdutosDisponiveis())
+                {
+                    <th>@item.Nome</th>
+                }
+            </tr>
+        </thead>
+        <tr>
+            <td>
+                @(
+                    TempData.Get<List<MovimentacaoProdutoPorCidade>>("SaidaProdutos").Count
+                    )
+            </td>
+            @foreach (var item in TransporteData.ProdutosDisponiveis())
+            {
+                <td>
+                    @(
+                        TempData.Get<List<MovimentacaoProdutoPorCidade>>("SaidaProdutos").Sum(x => x.Produtos.QuantidadePorId(item.Id))
+                        )
+                </td>
+            }
+        </tr>
+    </table>
+    </fieldset>
+}

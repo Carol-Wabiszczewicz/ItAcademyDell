@@ -1,0 +1,93 @@
+﻿@model HomeModel;
+@{
+
+    ViewData["Title"] = "Orçamento";
+}
+<partial name="~/Views/Shared/_Menu.cshtml" />
+
+
+<form asp-controller="Home" asp-action="Orcamento" method="Post" enctype="multipart/form-data" style="padding: 25px" id="teste">
+<fieldset class="border p-4" style="width:550px; margin-left: auto; margin-right: auto; margin-top: 150px">
+     <legend class="float-none w-auto"> Orçamento simples</legend>
+    <label>De: </label> @Html.DropDownListFor(model => model.CidadeOrigem, new SelectList(TransporteData.NomesCidades))
+    <label>Para: </label> @Html.DropDownListFor(model => model.CidadeDestino, new SelectList(TransporteData.NomesCidades))
+    <br />
+    <br />
+    <label>Modalidade de transporte:</label><div style="width: 450px">@Html.DropDownListFor(model=> model.ModeloDeTransporte, new SelectList(TransporteData.ModelosDeTransporte(), "Id", "Nome"), "-- Selecione um caminhão --", new { @class = "form-control" })</div> 
+     <br />
+    <button type="submit" onclick="calcular()" class="button" style="font-family: 'Oswald', sans-serif;">Calcular </button>
+</fieldset>
+
+</form>
+
+<div style="margin-left: auto; margin-right: auto; border-style:outset ; width: 1180px; padding: 3px; padding-left: 9px; border-color: #16a085">
+@if (Model.ValoresCalculados)
+{
+    @($"De: {Model.CidadeOrigem} para: {Model.CidadeDestino}, utilizando a modalidade de transporte: {Model.DescricaoTransporte}, a distância é de: {Model.Distancia} km e o custo será de {Model.CustoTotal:C}")
+}
+</div>
+
+
+<style type="text/css">
+
+    fieldset.scheduler-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+
+legend.scheduler-border {
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+    text-align: left !important;
+}
+     .button {
+                text-transform: uppercase;
+                cursor: pointer;
+                font-size: 11px;
+                letter-spacing: 2px;
+                position: relative;
+                background-color: #16a085;
+                border: none;
+                color: #fff;
+                padding: 8px;
+                height: 40px;
+                width: 100px;
+                text-align: center;
+                transition-duration: 0.4s;
+                overflow: hidden;
+                box-shadow: 0 5px 15px #193047;
+                border-radius: 4px;
+            }
+
+            .button:hover {
+              background: #fff;
+              box-shadow: 0px 2px 10px 5px #1abc9c;
+              color: #000;
+            }
+
+            .button:after {
+              content: "";
+              background: #1abc9c;
+              display: block;
+              position: absolute;
+              padding-top: 300%;
+              padding-left: 350%;
+              margin-left: -20px !important;
+              margin-top: -120%;
+              opacity: 0;
+              transition: all 0.8s
+            }
+
+            .button:active:after {
+              padding: 0;
+              margin: 0;
+              opacity: 1;
+              transition: 0s
+            }
+
+            .button:focus { outline:0; }
+</style>
+

@@ -1,0 +1,121 @@
+﻿@model OrcamentoModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<fieldset class="border p-4" style="width:750px;margin-top: 50px; margin-left: 50px; float: left">
+<table>
+    <legend class="float-none w-auto">Itens de Entrada</legend>
+    <tr>
+        <td>
+            Nome da empresa
+        </td>
+        <td>
+            @Model.NomeEmpresa
+        </td>
+    </tr>
+
+</table>
+
+<br />
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">Origem</th>
+            <th colspan="@(TransporteData.ProdutosDisponiveis().Count)" align="center">Entrada de </th>
+        </tr>
+
+        <tr>
+            @foreach (var item in TransporteData.ProdutosDisponiveis())
+            {
+                <th>@item.Nome  </th>
+            }
+        </tr>
+    </thead>
+    <tr>
+        <td>
+            @(Model.Entrada.Cidade)
+        </td>
+        @foreach (var prod in TransporteData.ProdutosDisponiveis())
+        {
+            <td>
+                @(Model.Entrada.Produtos.QuantidadePorId(prod.Id))
+            </td>
+        }
+    </tr>
+    <tfoot>
+        <tr>
+            <td>Peso Por Prod.</td>
+            @foreach (var prod in TransporteData.ProdutosDisponiveis())
+            {
+                <td>
+                    @(
+                        Model.Entrada.Produtos.PesoPorId(prod.Id)
+                        )
+                </td>
+            }
+
+        </tr>
+    </tfoot>
+</table>
+</fieldset>
+
+<fieldset class="border p-4" style="width:550px;margin-top: 50px; margin-left: 50px; float: left">
+<legend class="float-none w-auto">Itens de Saída</legend>
+<br />
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">Destino</th>
+            <th colspan="@(TransporteData.ProdutosDisponiveis().Count)" align="center">Saída de </th>
+        </tr>
+
+      
+    </thead>
+    @for (int i = 0; i < Model.Saida.Count; i++)
+    {
+        <tr>
+
+            <td>Percurso: </td>
+            <td>
+                @(i == 0 ? Model.Entrada.Cidade : Model.Saida[i - 1].Cidade) - @(Model.Saida[i].Cidade)
+                ((@Model.Saida[i].DistanciaDaCidadeAnterior)Km)
+            </td>
+
+        </tr>
+        <tr>
+            <td>Produto Entregues:</td>
+            <td>
+                @Model.Saida[i].Produtos.ToString();
+            </td>
+        </tr>
+        <tr>
+            <td>Reducao da Carga:</td>
+            <td>
+                @Model.Saida[i].Produtos.Sum(x=>x.PesoTotal);
+            </td>
+        </tr>
+        <tr>
+            <td>Caminhoes</td>
+            <td>
+                @foreach (var item in Model.Saida[i].Caminhoes)
+                {
+                    <p>@(item.Nome) - @(item.Quantidade)</p>
+                }
+            </td>
+        </tr>
+
+    }
+
+</table>
+</fieldset>
+
+<div style="clear: both; "> 
+    <fieldset>
+<p>Peso Total Enviado: @Model.PesoTotalEntrada</p>
+<p>Valor Total: @Model.ValorTotal</p>
+</fieldset>
+</div>
+@*<p>Custo Unitário Médio: @Model.CustoUnitarioMedio</p>*@
